@@ -46,6 +46,7 @@ public class MissionRepositoryImpl implements MissionRepository{
         return missions.values().stream()
                 .map(m -> new MissionSummary(
                         m.getName(),
+                        m.getStatus(),
                         m.getRockets().size(),
                         m.getRockets().stream()
                                 .map(r -> new MissionSummary.RocketInfo(r.getName(), r.getStatus()))

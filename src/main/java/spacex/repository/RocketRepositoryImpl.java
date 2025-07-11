@@ -52,6 +52,7 @@ public class RocketRepositoryImpl implements RocketRepository {
 
     @Override
     public void changeRocketStatus(String name, RocketStatus status) {
+        if (status == null) throw new NullPointerException("Rocket status cannot be null");
         Rocket rocket = getRocket(name);
         rocket.setStatus(status);
 

@@ -36,6 +36,7 @@ public class MissionRepositoryImpl implements MissionRepository{
 
     @Override
     public void changeStatus(String name, MissionStatus status) {
+        if (status == null) throw new NullPointerException("Mission status cannot be null");
         Mission mission = getMission(name);
         mission.setStatus(status);
     }

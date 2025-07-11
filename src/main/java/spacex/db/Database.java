@@ -1,8 +1,12 @@
 package spacex.db;
 
-import java.sql.*;
-import java.nio.file.*;
-import java.io.*;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class Database {
     private static final String JDBC_URL = "jdbc:h2:mem:spacex;DB_CLOSE_DELAY=-1";

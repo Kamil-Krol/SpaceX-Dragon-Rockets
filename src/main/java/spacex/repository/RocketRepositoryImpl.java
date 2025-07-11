@@ -14,7 +14,13 @@ public class RocketRepositoryImpl implements RocketRepository {
 
     @Override
     public Rocket addRocket(String name) {
-        if (rockets.containsKey(name)) throw new IllegalArgumentException("Rocket already exists");
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Rocket name cannot be empty");
+        }
+        if (rockets.containsKey(name)) {
+            throw new IllegalArgumentException("Rocket already exists");
+        }
+
         Rocket rocket = new Rocket(name);
         rockets.put(name, rocket);
         return rocket;
@@ -23,17 +29,22 @@ public class RocketRepositoryImpl implements RocketRepository {
     @Override
     public Rocket getRocket(String name) {
         Rocket rocket = rockets.get(name);
-        if (rocket == null) throw new IllegalArgumentException("Rocket not found");
+        if (rocket == null) {
+            throw new IllegalArgumentException("Rocket not found");
+        }
         return rocket;
     }
 
     @Override
     public void assignToMission(String rocketName, Mission mission) {
         Rocket rocket = getRocket(rocketName);
-        if (rocket.getAssignedMission() != null)
+
+        if (rocket.getAssignedMission() != null) {
             throw new IllegalStateException("Rocket already assigned");
-        if (mission.getStatus() == MissionStatus.ENDED)
+        }
+        if (mission.getStatus() == MissionStatus.ENDED) {
             throw new IllegalStateException("Mission ended");
+        }
 
         rocket.assignMission(mission);
         mission.addRocket(rocket);
@@ -43,6 +54,7 @@ public class RocketRepositoryImpl implements RocketRepository {
     public void changeRocketStatus(String name, RocketStatus status) {
         Rocket rocket = getRocket(name);
         rocket.setStatus(status);
+
         Mission mission = rocket.getAssignedMission();
         if (mission != null) {
             mission.updateStatus();

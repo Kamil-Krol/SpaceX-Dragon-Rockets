@@ -11,8 +11,8 @@ import spacex.repository.MissionRepositoryImpl;
 import spacex.repository.RocketRepository;
 import spacex.repository.RocketRepositoryImpl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+
 
 class RocketRepositoryTest {
     private RocketRepository rocketRepo;
@@ -52,5 +52,65 @@ class RocketRepositoryTest {
         rocketRepo.changeRocketStatus("R1", RocketStatus.IN_SPACE);
         assertEquals(RocketStatus.IN_SPACE, rocketRepo.getRocket("R1").getStatus());
         assertEquals(MissionStatus.IN_PROGRESS, m.getStatus());
+    }
+    @Test
+    void addDuplicateRocket_throws() {
+        rocketRepo.addRocket("Falcon");
+        Exception ex = assertThrows(IllegalArgumentException.class, () -> {
+            rocketRepo.addRocket("Falcon");
+        });
+        assertEquals("Rocket already exists", ex.getMessage());
+    }
+
+    @Test
+    void assignRocketAlreadyAssigned_throws() {
+        rocketRepo.addRocket("Dragon");
+        Mission m1 = missionRepo.addMission("Luna");
+        Mission m2 = missionRepo.addMission("Mars");
+        rocketRepo.assignToMission("Dragon", m1);
+        Exception ex = assertThrows(IllegalStateException.class, () -> {
+            rocketRepo.assignToMission("Dragon", m2);
+        });
+        assertEquals("Rocket already assigned", ex.getMessage());
+    }
+
+    @Test
+    void assignRocketToEndedMission_throws() {
+        rocketRepo.addRocket("Dragon");
+        Mission m = missionRepo.addMission("Luna");
+        missionRepo.changeStatus("Luna", MissionStatus.ENDED);
+        Exception ex = assertThrows(IllegalStateException.class, () -> {
+            rocketRepo.assignToMission("Dragon", m);
+        });
+        assertEquals("Mission ended", ex.getMessage());
+    }
+
+    @Test
+    void changeStatusOfNonExistingRocket_throws() {
+        Exception ex = assertThrows(IllegalArgumentException.class, () -> {
+            rocketRepo.changeRocketStatus("NonExistent", RocketStatus.IN_SPACE);
+        });
+        assertEquals("Rocket not found", ex.getMessage());
+    }
+
+    @Test
+    void assignNonExistingRocket_throws() {
+        Mission m = missionRepo.addMission("Luna");
+        Exception ex = assertThrows(IllegalArgumentException.class, () -> {
+            rocketRepo.assignToMission("NonExistent", m);
+        });
+        assertEquals("Rocket not found", ex.getMessage());
+    }
+
+    @Test
+    void addRocket_emptyOrNullName_throws() {
+        Exception ex1 = assertThrows(IllegalArgumentException.class, () -> {
+            rocketRepo.addRocket("");
+        });
+        Exception ex2 = assertThrows(IllegalArgumentException.class, () -> {
+            rocketRepo.addRocket(null);
+        });
+        assertEquals("Rocket name cannot be empty", ex1.getMessage());
+        assertEquals("Rocket name cannot be empty", ex2.getMessage());
     }
 }

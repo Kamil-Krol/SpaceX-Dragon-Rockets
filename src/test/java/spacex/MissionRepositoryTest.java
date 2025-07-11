@@ -51,15 +51,15 @@ class MissionRepositoryTest {
         rocketRepo.addRocket("R2");
         rocketRepo.addRocket("R3");
 
-        rocketRepo.assignToMission("R1", m1); // 1 rocket
-        rocketRepo.assignToMission("R2", m2); // 1 rocket
-        rocketRepo.assignToMission("R3", m1); // 2 total in m1
+        rocketRepo.assignToMission("R1", m1);
+        rocketRepo.assignToMission("R2", m2);
+        rocketRepo.assignToMission("R3", m1);
 
         List<MissionSummary> summary = missionRepo.getSummary();
 
-        assertEquals("Beta", summary.get(0).name());   // 2 rockets
-        assertEquals("Alpha", summary.get(1).name());  // 1 rocket
-        assertEquals("Gamma", summary.get(2).name());  // 0 rockets
+        assertEquals("Beta", summary.get(0).name());
+        assertEquals("Alpha", summary.get(1).name());
+        assertEquals("Gamma", summary.get(2).name());
     }
 
     @Test
@@ -147,5 +147,13 @@ class MissionRepositoryTest {
                 .findFirst()
                 .orElseThrow();
         assertEquals(0, ms.rocketCount());
+    }
+
+    @Test
+    void changeStatusToNull_throwsNullPointerException() {
+        missionRepo.addMission("Juno");
+        assertThrows(NullPointerException.class, () -> {
+            missionRepo.changeStatus("Juno", null);
+        });
     }
 }

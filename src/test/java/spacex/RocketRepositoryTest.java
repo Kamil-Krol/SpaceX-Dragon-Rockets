@@ -113,4 +113,15 @@ class RocketRepositoryTest {
         assertEquals("Rocket name cannot be empty", ex1.getMessage());
         assertEquals("Rocket name cannot be empty", ex2.getMessage());
     }
+
+    @Test
+    void changeRocketStatusToNull_throwsNullPointerException() {
+        rocketRepo.addRocket("Falcon");
+
+        NullPointerException ex = assertThrows(NullPointerException.class, () -> {
+            rocketRepo.changeRocketStatus("Falcon", null);
+        });
+
+        assertEquals("Rocket status cannot be null", ex.getMessage());
+    }
 }

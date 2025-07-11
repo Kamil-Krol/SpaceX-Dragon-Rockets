@@ -1,0 +1,26 @@
+plugins {
+    id 'java'
+}
+
+group = 'spacex'
+version = '1.0.0'
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+    implementation("com.h2database:h2:2.2.224")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
+}
+
+test {
+    useJUnitPlatform()
+}
